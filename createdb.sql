@@ -1,5 +1,5 @@
 create table daily_rate(
-    id integer primary key increment,
+    id integer primary key,
     rate float
 );
 
@@ -15,12 +15,12 @@ create table delivery(
     created datetime,
     payment_codename varchar(255),
     rate_id integer,
-    raw_text: text,
+    raw_text text,
     FOREIGN KEY(payment_codename) REFERENCES payment_method(codename),
-    FOREIGN KEY(rate) REFERENCES daily_rate(id)
+    FOREIGN KEY(rate_id) REFERENCES daily_rate(id)
 );
 
-insert into daily_rate (rate) value (3.6), (3.1), (3.3), (3.9), (2.8);
+insert into daily_rate (rate) values (3.6), (3.1), (3.3), (3.9), (2.8);
 insert into payment_method (codename, name, aliases)
 values
     ("cash", "наличные", "нал, налик"),
