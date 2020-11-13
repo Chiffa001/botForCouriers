@@ -1,9 +1,23 @@
 import os
+from typing import List, Dict
 
 import sqlite3
 
 conn = sqlite3.connect(os.path.join("db", "deliveries.db"))
 cursor = conn.cursor()
+
+
+def fetch_all(table: str, columns: List[str]) -> List[Dict]:
+    columns_joined = ", ".join(columns)
+    cursor.execute(f"SELECT {columns_joined} FROM {table}")
+    rows = cursor.fetchall()
+    result = []
+    for row in rows:
+        dict_row = {}
+        for index, column in enumerate(columns):
+            dict_row[column] = row[index]
+        result.append(dict_row)
+    return result
 
 
 def get_cursor():
