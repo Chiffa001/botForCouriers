@@ -1,5 +1,6 @@
 import logging
 from db import insert
+import pytz
 
 from config import API_TOKEN, ACCESS_ID
 from payment_method import PaymentMethods
@@ -8,7 +9,6 @@ from aiogram import Bot, Dispatcher, executor, types
 from middlewares import AccessMiddleware
 
 logging.basicConfig(level=logging.INFO)
-
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
@@ -31,7 +31,10 @@ async def get_payment_methods(message: types.Message):
 
 @dp.message_handler()
 async def echo(message: types.Message):
-    await message.answer(insert("blabla", {"name": "Anton", "age": 22}))
+    daily_rate = {"rate": 12.2}
+    insert("daily_rate", daily_rate)
+    await message.answer("check")
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
