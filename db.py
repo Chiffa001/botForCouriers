@@ -20,12 +20,15 @@ def fetch_all(table: str, columns: List[str]) -> List[Dict]:
     return result
 
 
-def insert(table: str, column_values: Dict) -> None:
-    columns = ", ".join(column_values.keys())
-    values = ", ".join(map(lambda v: str(v), column_values.values()))
-    request = f"INSERT INTO {table} ({columns}) VALUES ({values})"
-    print(request)
-    cursor.execute(request)
+def insert(table: str, column_values: Dict):
+    columns = ', '.join(column_values.keys())
+    values = [tuple(column_values.values())]
+    placeholders = ", ".join("?" * len(column_values.keys()))
+    cursor.executemany(
+        f"INSERT INTO {table} "
+        f"({columns}) "
+        f"VALUES ({placeholders})",
+        values)
     conn.commit()
 
 

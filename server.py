@@ -1,9 +1,8 @@
 import logging
-from db import insert
-import pytz
 
 from config import API_TOKEN, ACCESS_ID
 from payment_method import PaymentMethods
+from delivery import add_delivery
 
 from aiogram import Bot, Dispatcher, executor, types
 from middlewares import AccessMiddleware
@@ -29,11 +28,12 @@ async def get_payment_methods(message: types.Message):
     await message.answer(answer_message)
 
 
+# хрен пойми чего, но пропускает только один запрос и виснет
 @dp.message_handler()
 async def echo(message: types.Message):
-    daily_rate = {"rate": 12.2}
-    insert("daily_rate", daily_rate)
-    await message.answer("check")
+    print(message)
+    add_delivery(message.text)
+    await message.answer("end")
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ create table payment_method(
 create table delivery(
     id integer primary key,
     amount float,
-    created datetime,
+    created date,
     payment_codename varchar(255),
     rate_id integer,
     raw_text text,

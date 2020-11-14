@@ -26,6 +26,9 @@ class PaymentMethods:
     def get_all_payment_methods(self) -> List[PaymentMethod]:
         return self._payment_methods
 
+    def get_payment_method_by_alias(self, alias) -> PaymentMethod:
+        return list(filter(lambda m: alias in m.aliases or alias == m.name, self._payment_methods))[0]
+
     @staticmethod
     def _fill_aliases(payment_methods: List[Dict]) -> List[PaymentMethod]:
         payment_methods_result = []
