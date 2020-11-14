@@ -20,6 +20,19 @@ def fetch_all(table: str, columns: List[str]) -> List[Dict]:
     return result
 
 
+def insert(table: str, column_values: Dict) -> None:
+    columns = tuple(column_values.keys())
+    values = tuple(column_values.values())
+    cursor.execute(f"INSERT INTO {table} {columns} VALUES {values}")
+    conn.commit()
+
+
+def delete(table: str, row_id: int) -> None:
+    row_id = int(row_id)
+    cursor.execute(f"DELETE FROM {table} WHERE id={row_id}")
+    conn.commit()
+
+
 def get_cursor():
     return cursor
 

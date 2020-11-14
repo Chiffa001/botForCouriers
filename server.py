@@ -1,4 +1,5 @@
 import logging
+from db import insert
 
 from config import API_TOKEN, ACCESS_ID
 from payment_method import PaymentMethods
@@ -26,6 +27,11 @@ async def get_payment_methods(message: types.Message):
     for string in [str(payment_method) for payment_method in payment_methods]:
         answer_message += f"{string}\n\n"
     await message.answer(answer_message)
+
+
+@dp.message_handler()
+async def echo(message: types.Message):
+    await message.answer(insert("blabla", {"name": "Anton", "age": 22}))
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
