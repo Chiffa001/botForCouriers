@@ -2,7 +2,7 @@ import logging
 
 from config import API_TOKEN, ACCESS_ID
 from payment_method import PaymentMethods
-from delivery import add_delivery
+from delivery import add_delivery, get_today_deliveries, get_total_amount_per_day
 
 from aiogram import Bot, Dispatcher, executor, types
 from middlewares import AccessMiddleware
@@ -28,12 +28,32 @@ async def get_payment_methods(message: types.Message):
     await message.answer(answer_message)
 
 
-# хрен пойми чего, но пропускает только один запрос и виснет
+@dp.message_handler(commands=['day'])
+async def get_list_of_today_deliveries(message: types.Message):
+    today_deliveries = get_today_deliveries()
+    if len(today_deliveries) == 0:
+        await message.answer("Пока нет ни одной доставки")
+        return
+    today_deliveries = map(lambda delivery: f"Цена: {delivery[0]}\nСпособ оплаты: {delivery[1]}\n", today_deliveries)
+    result = ""
+    for key, string in enumerate(today_deliveries):
+        result += f"Заказ {key + 1}:\n{string}\n"
+    await message.answer(result)
+
+
+@dp.message_handler(commands=['total_amount_day'])
+async def send_sum_per_day(message: types.Message):
+    total = get_total_amount_per_day()
+    await message.answer(f"Всего: {str(total)}")
+
+
 @dp.message_handler()
 async def echo(message: types.Message):
-    print(message)
-    add_delivery(message.text)
-    await message.answer("end")
+    try:
+        add_delivery(message.text)
+        await message.answer("end")
+    except Exception:
+        await message.answer("Что-то пошло не так")
 
 
 if __name__ == '__main__':

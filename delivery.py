@@ -25,6 +25,21 @@ def add_delivery(raw_message: str):
     # PaymentMethods().get_payment_method_by_alias(message)
 
 
+def get_today_deliveries() -> []:
+    cursor = db.get_cursor()
+    cursor.execute(
+        "select amount, (select name from payment_method where codename = delivery.payment_codename) "
+        "from delivery where date(created) = date('now', 'localtime')")
+    result = cursor.fetchall()
+    return result
+
+
+def get_total_amount_per_day() -> float:
+    cursor = db.get_cursor()
+    cursor.execute("select sum(amount) from delivery where date(created) = date('now', 'localtime')")
+    return cursor.fetchone()[0]
+
+
 def _parse_message(raw_message: str):
     regexp_result = re.match(r"^([\d]+.?([\d]+)?)|([а-я]+)", raw_message)
     return regexp_result.group(0)
