@@ -16,11 +16,13 @@ dp.middleware.setup(AccessMiddleware(ACCESS_ID))
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.message):
-    await message.answer("Бот для курьеров")
+    await message.answer(
+        "Бот для курьеров\n/help - помощь\n/payment - список алиасов\n"
+        "/day - список всех доставок за день\n/total_amount_day - дневной итог")
 
 
 @dp.message_handler(commands=['payment'])
-async def get_payment_methods(message: types.Message):
+async def process_payment_command(message: types.Message):
     payment_methods = PaymentMethods().get_all_payment_methods()
     answer_message = ""
     for string in [str(payment_method) for payment_method in payment_methods]:
@@ -29,7 +31,7 @@ async def get_payment_methods(message: types.Message):
 
 
 @dp.message_handler(commands=['day'])
-async def get_list_of_today_deliveries(message: types.Message):
+async def process_day_command(message: types.Message):
     today_deliveries = get_today_deliveries()
     if len(today_deliveries) == 0:
         await message.answer("Пока нет ни одной доставки")
@@ -42,17 +44,19 @@ async def get_list_of_today_deliveries(message: types.Message):
 
 
 @dp.message_handler(commands=['total_amount_day'])
-async def send_sum_per_day(message: types.Message):
+async def process_total_amount_day_command(message: types.Message):
     total = get_total_amount_per_day()
-    await message.answer(f"Всего: {str(total)}")
+    salary = len(get_today_deliveries()) * 3.9
+    result = round(total - salary, 2)
+    await message.answer(f"Всего: {str(total)}\nЗарплата: {salary}\nИтого: {result}\n")
 
 
 @dp.message_handler()
-async def echo(message: types.Message):
+async def process_any_command(message: types.Message):
     try:
         add_delivery(message.text)
-        await message.answer("end")
-    except Exception:
+        await message.answer("Добавлено")
+    except:
         await message.answer("Что-то пошло не так")
 
 

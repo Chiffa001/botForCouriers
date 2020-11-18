@@ -37,7 +37,7 @@ def get_today_deliveries() -> []:
 def get_total_amount_per_day() -> float:
     cursor = db.get_cursor()
     cursor.execute("select sum(amount) from delivery where date(created) = date('now', 'localtime')")
-    return cursor.fetchone()[0]
+    return cursor.fetchone()[0] or 0
 
 
 def _parse_message(raw_message: str):
