@@ -45,10 +45,11 @@ async def process_day_command(message: types.Message):
 
 @dp.message_handler(commands=['total_amount_day'])
 async def process_total_amount_day_command(message: types.Message):
-    total = get_total_amount_per_day()
-    salary = len(get_today_deliveries()) * 3.9
+    total = round(get_total_amount_per_day(), 2)
+    count_deliveries = len(get_today_deliveries())
+    salary = round(count_deliveries * 3.6, 2)
     result = round(total - salary, 2)
-    await message.answer(f"Всего: {str(total)}\nЗарплата: {salary}\nИтого: {result}\n")
+    await message.answer(f"Количество доставок: {count_deliveries}\nВсего: {str(total)}\nЗарплата: {salary}\nИтого: {result}\n")
 
 
 @dp.message_handler()
